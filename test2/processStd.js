@@ -21,18 +21,9 @@ process.stdin.on("data",function(data){
             person.QQ = data.toString();
             console.log("Mobile:");
             break;
-        // case 4:
-        //     console.log(":");
-        //     break;
         default:
             person.Mobile = data.toString();
             console.log(person);
             process.exit();
     }
-    // if(i == 4){
-    //     process.exit();
-    // }
-    // else{
-    //     console.log(data.toString());
-    // }   
 })
