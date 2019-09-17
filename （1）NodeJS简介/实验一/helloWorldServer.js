@@ -7,8 +7,14 @@
 const http = require("http");
 
 var server = http.createServer(function(req,res){
-    res.write("hello world");
+/**
+ * http协议，协议的结构协议的请求响应过程
+ * 状态码
+ */
+    // resizeTo.writeHead(200,{"Content-Type":"text/html"});
+    res.write("<h1>hello world<h1>");
+    //响应结束
     res.end();
 });
-server.listen(8081);
-console.log("sever is listening 8081");
+server.listen(8080);
+console.log("sever is listening 8080");
