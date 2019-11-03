@@ -110,29 +110,23 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $.get("http://localhost:8083/loginlist",function(data){
-            var dataList = JSON.parse(data);
-            $(".myform").on("click","button",function(e){
-                var dataList = JSON.parse(data);
-                var username1 = dataList[0].username;
-                var pwd1 = dataList[0].pwd;
-                var username = $("#username").val();
-                var pwd = $("#pwd").val();
-                console.log(username);
-                console.log(username1);
-                console.log(pwd);
-                console.log(pwd1);
-                if(username==username1 && pwd==pwd1){
-                    console.log(this);
-                    window.location.href = "http://localhost:8083/listmanager";
+    $("button").click(function () {
+        $.ajax({
+                url:"http://localhost:8083/listmanager",
+                type:"POST",
+                data:{
+                    username:$("#username").val(),
+                    password:$("#pwd").val()
+                },  
+                success:function(data){
+                    if(data=="success"){
+                        window.location.href = "http://localhost:8083/listmanager";
+                    }
+                    else{
+                        alert("验证失败，请重新输入！");
+                    }
                 }
-                else{
-                    alert("账号或密码错误");
-                }
-            })
-            
-        });
+            });
     })
 
     

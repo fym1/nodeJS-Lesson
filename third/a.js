@@ -18,6 +18,9 @@ http.createServer(function(req,res){
     else if(pathName=="/login_bg.jpg"){
         showImg(res);
     }
+    else if(pathName=="/listmanager" && req.method=="POST"){
+        judge(req, res);
+    }
     else if(pathName=="/listmanager" && req.method == "GET"){
         listManager(res);
     }
@@ -167,13 +170,13 @@ function show(res){
     res.end();
 }
 function plus(req,res){
-    var dataStr ="";
+    var listStr ="";
     req.on("data",function(chunk){
-        dataStr += chunk;
+        listStr += chunk;
     })
     req.on("end",function(){
         var obj1={};
-        var obj2=querystring.parse(dataStr);
+        var obj2=querystring.parse(listStr);
         obj1.chapterName=obj2.title;
         obj1.chapterContent=obj2.content;
         obj1.chapterId=chapterList.length+1;
@@ -182,3 +185,18 @@ function plus(req,res){
         res.end("success data");
     })
 }
+function judge(req,res){
+    var listStr ="";
+    req.on("data",function(chunk){
+        listStr += chunk;
+    })
+    req.on("end",function(){
+        var dataObj=querystring.parse(listStr);
+        if(dataObj.username==userList[0].username && dataObj.password==userList[0].pwd){
+            res.end("success");
+        }
+        else{
+            res.end("error");
+        }
+    })
+};
