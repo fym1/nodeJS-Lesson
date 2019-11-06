@@ -1,0 +1,4 @@
+npm install -g express  全局安装express模块
+npm install -g express-generator 全局安装自动化工具
+express -e HelloExpress 新建HelloExpress工程
+express --view=ejs HelloExpress 同上
