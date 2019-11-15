@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        .container {
+            background-color: #fff;
+            border: 1px solid #e4e4e4;
+            border-radius: 5px;
+            height: 500px;
+            width: 500px;
+            border: 3px dotted #eee;
+            margin: 0 auto;
+            margin-top: 40px;
+            padding: 40px;
+        }
+        ul {
+            margin-top: 20px;
+        }
+        .folder {
+            height: 26px;
+            width: 26px;
+            background: url(./1.png) -594px -862px no-repeat;
+            cursor: pointer;
+        }
+        .file {
+            height: 26px;
+            width: 26px;
+            background: url(./1.png)  -594px -68px no-repeat;
+            cursor: pointer;
+        }
+        li {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            display: -webkit-flex;
+            margin-top: 10px;
+            border-bottom: 1px solid #f2f6fd;
+            padding-bottom: 10px;
+        }
+        li a, li span {
+            text-decoration: none;
+            font-size: 12px;
+            line-height: 26px;
+            color: black;
+            margin-left: 20px;
+            font-family: "Microsoft YaHei";
+        }
+        li span {
+            /* margin-left: 50px; */
+            width: 150px;
+            text-align: center;
+        }
+        li a {
+            width: 50px;
+            text-align: center;
+        }
+        li .del {
+            margin-right: 0px!important;
+        }
+        .title {
+            display: flex;
+            /* display: -webkit-flex; */
+            font-size: 12px;
+            /* justify-content: space-around; */
+            margin-left: 60px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <span>类型</span>
+            <span style="margin-left: 40px;">文件名</span>
+            <span style="margin-left: 80px;">大小</span>
+            <span style="margin-left: 100px;">时间</span>
+            <span style="margin-left: 73px;">操作</span>
+        </div>
+        <ul>
+        </ul> 
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    //当 DOM（文档对象模型） 已经加载，并且页面（包括图像）已经完全呈现时，会发生 ready 事件。
+    //ready() 函数规定当 ready 事件发生时执行的代码。
+    $(document).ready(function(){
+        //$.get() 方法使用 HTTP GET 请求从服务器加载数据。
+        $.get("http://localhost:8081/getfilelist",function(data){
+            //html() 方法设置或返回被选元素的内容（innerHTML）。
+            $("ul").html("");
+            //JSON.parse() 方法用于将一个 JSON 字符串转换为对象。
+            var dataList = JSON.parse(data);
+            for(var i=0;i<dataList.length;i++){
+                var liNode = "<li><div class='"+dataList[i].fileType+"'></div>" +
+                            "<a href='###'>" +dataList[i].fileName + "</a>" +
+                            "<span>" + dataList[i].fileSize + "</span>" +
+                            "<span>" + dataList[i].createTime + "</span>" +
+                            "<a href='##' class='del'>删除</a></li>";
+                $("ul").append(liNode);
+            }
+        });
+    })
+    //删除选中的文件或文件夹
+    //on() 方法在被选元素及子元素上添加一个或多个事件处理程序。
+    $("ul").on("click",".del",function(e){
+        var that = this;
+        //preventDefault() 方法阻止元素发生默认的行为（例如，当点击提交按钮时阻止对表单的提交）。
+        e.preventDefault();
+        //prev() 获得匹配元素集合中每个元素紧邻的前一个同胞元素，通过选择器进行筛选是可选的。
+        var createTime = $(this).prev().html();
+        if(confirm("确认删除数据！"))
+        $.get("http://localhost:8081/delfile?createtime="+createTime,function(data){
+            if(data == "success"){
+                $(that).parent().remove();
+            }
+        })
+    })
+    $("ul").on("click",".file",function(e){
+        e.preventDefault();
+        console.log(this);
+        //next() 方法返回被选元素的后一个同级元素
+        var createTime = $(this).next().next().next().html();
+        $.get("http://localhost:8081/getfile?createtime="+createTime,function(data){
+            document.write(data);
+        })
+    })
+    //显示文件夹目录
+    $("ul").on("click",".folder",function(e){
+        e.preventDefault();
+        var createTime = $(this).next().next().next().html();
+        $.get("http://localhost:8081/getchildfile?createtime="+createTime,function(data){
+            $("ul").html("");
+            var dataList = JSON.parse(data);
+            for(var i=0;i<dataList.length;i++){
+                var liNode = "<li><div class='"+dataList[i].fileType+"'></div>" +
+                            "<a href='###'>" +dataList[i].fileName + "</a>" +
+                            "<span>" + dataList[i].fileSize + "</span>" +
+                            "<span>" + dataList[i].createTime + "</span>" +
+                            "<a href='##' class='del'>删除</a></li>";
+                $("ul").append(liNode);
+            }
+        })
+    })
+</script>
+</html>
